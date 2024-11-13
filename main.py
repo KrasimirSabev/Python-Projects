@@ -1,14 +1,9 @@
+from logging import raiseExceptions
+
 from Transaction import Transaction
 from Table import Table
 from Customer import Customer
 from datetime import datetime
-
-'''
-1) Maybe a future implementation would be to ask the guest at what future date they would like to book.
-2) There isn't a limit to how many bookings can be made. 
-3) Customer ID is yet to be worked on. Core idea: customer_list should collect the data and store it in tuples of guests. Collect the first, last names, and the account number from the customer list and create a copy of the list with that tuple. Then convert the tuple into a hash value and print it for the customer to see. By entering the hash value they will be able to see whether they have an existing booking or not. Maybe will use the same method for cancelling a reservation? 
-'''
-
 
 
 customer_list = []
@@ -68,6 +63,7 @@ def reserve_table():
     else:
         print('Unfortunately, we can only accommodate up to 2 people. If you still wish to book for 1 or 2 people, you can start over.')
 
+
 def book_table_of_one(guest):
     print('Certainly! We have a table of 1 available.')
     guest_acc_num=int(input('If you wish to proceed please provide your account number.\n'))
@@ -78,7 +74,11 @@ def book_table_of_one(guest):
     final_for_one = input('If you are happy with the price bellow please type "y".\n')
     if final_for_one.lower() == 'y':
         print(f'Thank you for making a reservation with us. Your booking was made on {current_time}.\n')
-    customer_list.append(guest)
+
+    customer_id_tuple = (guest.get_lname(), guest_acc_num, guest_s_code)
+    customer_id = hash(customer_id_tuple)
+    print(f'Your unique customer ID is {customer_id}.')
+    customer_list.append((guest, customer_id))
 
 
 
@@ -93,14 +93,38 @@ def book_table_of_two(guest):
     final_for_two = input('If you are happy with the price bellow please type "y".\n')
     if final_for_two.lower()=='y':
         print(f'Thank you for making a reservation with us. Your booking was made on {current_time}\n')
-    customer_list.append(guest)
+
+    customer_id_tuple = (guest.get_lname(), guest_acc_num, guest_s_code)
+    customer_id = hash(customer_id_tuple)
+    print(f'Your unique customer ID is {customer_id}. You can use it if you wish to see whether you have an existing reservation or if you wish to cancel an existing reservation.')
+    customer_list.append((guest, customer_id))
 
 def check_reservation():
-    check_customer_id = input('Please provide your Customer ID.\n')
-
+    try:
+        check_customer_id = int(input('Please provide your Customer ID.\n'))
+    except ValueError:
+        print('Invalid form of Customer ID. Please try again.')
+        return
+    for guest, customer_id in customer_list:
+        if customer_id == check_customer_id:
+            print(f'You have an existing reservation under the name {guest.get_fname(),guest.get_lname()}.')
+            return
+        else:
+            print('Sorry, you do not have an existing reservation.')
 
 def cancel_reservation():
-    pass
+    try:
+        cancel_customer_reservation = int(input('If you wish to cancel your existing reservation, please enter your unique customer ID. \n'))
+    except ValueError:
+        print('Invalid form of Customer ID. Please try again.')
+        return
+    for guest, customer_id in customer_list:
+        cancel = input(f'You have an existing reservation under the name {guest.get_fname(), guest.get_lname()}. If you wish to cancel that reservation please type "y".\n')
+        if cancel.lower() == "y":
+            print('Your reservation was cancelled. We will refund your money within the next 5-7 working days.\n')
+        else:
+            print('Your reservation is not cancelled. We will see you soon.')
+            return
 
 def display_contact_details():
     print('Contact us at tablebooking.com or call us at (012) 345 678. Have a good day!')
@@ -108,10 +132,3 @@ def display_contact_details():
 if __name__=='__main__':
     main_menu()
 print(customer_list)
-
-'''
-        for guests in customer_list:
-            print(guests.get_fname())
-            print(guests.get_lname())
-            print(guests.get.customer_age())
-'''
