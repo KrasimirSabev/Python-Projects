@@ -46,7 +46,6 @@ def reserve_table():
     if guest_age < 18:
         print('Sorry, you are not old enough to make a booking.')
         return
-# still haven't figured out the customer ID part.
     guest=Customer(1, first_name, last_name, guest_age)
     guest.set_fname(first_name)
     guest.set_lname(last_name)
