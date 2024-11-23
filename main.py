@@ -1,9 +1,9 @@
-from logging import raiseExceptions
 
 from Transaction import Transaction
 from Table import Table
 from Customer import Customer
 from datetime import datetime
+
 
 
 customer_list = []
@@ -46,6 +46,7 @@ def reserve_table():
     if guest_age < 18:
         print('Sorry, you are not old enough to make a booking.')
         return
+# still haven't figured out the customer ID part.
     guest=Customer(1, first_name, last_name, guest_age)
     guest.set_fname(first_name)
     guest.set_lname(last_name)
@@ -112,22 +113,16 @@ def check_reservation():
             print('Sorry, you do not have an existing reservation.')
 
 def cancel_reservation():
-    try:
-        cancel_customer_reservation = int(input('If you wish to cancel your existing reservation, please enter your unique customer ID. \n'))
-    except ValueError:
-        print('Invalid form of Customer ID. Please try again.')
-        return
+    cancel_customer_reservation = int(input('If you wish to cancel your existing reservation, please enter your unique customer ID. \n')) #this can probably be optimised and make the check and cancel functions into one. As of currently this isn't a big deal.
     for guest, customer_id in customer_list:
         cancel = input(f'You have an existing reservation under the name {guest.get_fname(), guest.get_lname()}. If you wish to cancel that reservation please type "y".\n')
         if cancel.lower() == "y":
             print('Your reservation was cancelled. We will refund your money within the next 5-7 working days.\n')
         else:
-            print('Your reservation is not cancelled. We will see you soon.')
-            return
+            print('Your reservation is not cancelled. We will see you soon')
 
 def display_contact_details():
     print('Contact us at tablebooking.com or call us at (012) 345 678. Have a good day!')
 
 if __name__=='__main__':
     main_menu()
-print(customer_list)
